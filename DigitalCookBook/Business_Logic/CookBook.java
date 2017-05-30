@@ -11,7 +11,8 @@ public class CookBook implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String cookBookName;
-	private LinkedList<Recipe> recipe = new LinkedList<Recipe>();
+	private LinkedList<Recipe> recipeList = new LinkedList<Recipe>();
+	//private LinkedList<Tag> tagList = new LinkedList<Tag>();
 
 	/**
 	 * constructor
@@ -33,7 +34,7 @@ public class CookBook implements Serializable {
 	 *            the recipe
 	 */
 	public void add(Recipe recipe) {
-		this.recipe.add(recipe);
+		this.recipeList.add(recipe);
 	}
 
 	/**
@@ -43,11 +44,13 @@ public class CookBook implements Serializable {
 	 *            the name of recipe
 	 * @return
 	 */
+	
+	
 
 	public Recipe getRecipe(String name) {
 
 		Recipe buf = null;
-		for (Recipe i : recipe) {
+		for (Recipe i : recipeList) {
 			if (i.getDishName().equals(name)) {
 				buf = i;
 			}

@@ -16,6 +16,7 @@ import java.util.LinkedList;
 @SuppressWarnings("serial")
 public class Recipe implements Serializable {
 
+	private Integer recipeId;
 	private String dishName;
 	private String location;
 	private Integer servings;
@@ -23,7 +24,6 @@ public class Recipe implements Serializable {
 	private Integer cookingTime;
 	private LinkedList<Ingredient> ingredient = new LinkedList<Ingredient>();
 	private LinkedList<String> steps = new LinkedList<String>();
-	private Integer recipeId;
 
 	/**
 	 * constructor of Recipe
@@ -114,6 +114,10 @@ public class Recipe implements Serializable {
 		return this.recipeId;
 	}
 
+	public LinkedList<String> getSteps() {
+		return this.steps;
+	}
+
 	public void setDishName(String newDishName) {
 		this.dishName = newDishName;
 	}
@@ -177,6 +181,8 @@ public class Recipe implements Serializable {
 	public void recipeToDatabase(DBConnector dbconnector) throws SQLException {
 		try {
 			dbconnector.addRecipe(this);
+			dbconnector.addPreparationStep(this);
+			dbconnector.addIngredient(this);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

@@ -27,8 +27,7 @@ public class CookBookApp implements Serializable {
 		recipe.addIngredient(new Ingredient("sesame oil", 4.0, "tablespoon"));
 		recipe.addIngredient(new Ingredient("dark soy sauce", 2.0, "teaspoon"));
 		recipe.addIngredient(new Ingredient("peanut oil", 3.0, "tablespoon"));
-		recipe.addIngredient(
-				new Ingredient("dried red chilis", 12.0, "pieces", "stemmed, halved crosswise, and seeded"));
+		recipe.addIngredient(new Ingredient("dried red chilis", 12.0, "pieces", "stemmed, halved crosswise, and seeded"));
 		recipe.addIngredient(new Ingredient("scallions", 5.0, "pieces", "white part only, thickly sliced crosswise"));
 		recipe.addIngredient(new Ingredient("garlic", 1.0, "cloves", "peeled, thinly sliced"));
 		recipe.addIngredient(new Ingredient("ginger", 0.5, "pieces", "peeled, minced"));

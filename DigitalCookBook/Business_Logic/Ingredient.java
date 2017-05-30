@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class Ingredient implements Serializable {
 
 	public String ingredientName;
-	public double quantity;
-	public String unit;
+	private double quantity;
+	private String unit;
 	private String description;
 
 	/**
@@ -77,6 +77,10 @@ public class Ingredient implements Serializable {
 	 * 
 	 * @param newIngredientName
 	 */
+	
+	public String getDescription(){
+		return description;
+	}
 	public void setIngredientName(String newIngredientName) {
 		ingredientName = newIngredientName;
 	}
