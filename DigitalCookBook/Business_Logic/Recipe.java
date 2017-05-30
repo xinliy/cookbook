@@ -24,6 +24,7 @@ public class Recipe implements Serializable {
 	private Integer cookingTime;
 	private LinkedList<Ingredient> ingredient = new LinkedList<Ingredient>();
 	private LinkedList<String> steps = new LinkedList<String>();
+	private LinkedList<Tag> tag = new LinkedList<Tag>();
 
 	/**
 	 * constructor of Recipe
@@ -118,6 +119,10 @@ public class Recipe implements Serializable {
 		return this.steps;
 	}
 
+	public LinkedList<Tag> getTagList() {
+		return tag;
+	}
+
 	public void setDishName(String newDishName) {
 		this.dishName = newDishName;
 	}
@@ -142,6 +147,10 @@ public class Recipe implements Serializable {
 		this.recipeId = newRecipeId;
 	}
 
+	public void setTagList(LinkedList<Tag> tagList) {
+		this.tag = tagList;
+	}
+
 	/**
 	 * adding ingredients to the recipe
 	 * 
@@ -159,6 +168,10 @@ public class Recipe implements Serializable {
 	 */
 	public void addPreparationStep(String steps) {
 		this.steps.add(steps);
+	}
+	
+	public void addTag(Tag tag){
+		this.tag.add(tag);
 	}
 
 	/**

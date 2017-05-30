@@ -180,26 +180,6 @@ public class DBConnector {
 
 	}
 
-	private void close() {
-		try {
-			if (resultSet != null) {
-				resultSet.close();
-
-			}
-
-			if (statement != null) {
-				statement.close();
-
-			}
-
-			if (connection != null) {
-				connection.close();
-
-			}
-		} catch (Exception e) {
-		}
-	}
-
 	public void addRecipe(Recipe r) throws ClassNotFoundException, SQLException {
 		getAccess();
 
@@ -255,9 +235,29 @@ public class DBConnector {
 							+ ingredient.get(i).getQuantity() + ", " + "'" + ingredient.get(i).getUnit() + "'," + "'"
 							+ ingredient.get(i).getDescription() + "')");
 
-			// close();
+			close();
 		}
 
+	}
+
+	private void close() {
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+
+			}
+
+			if (statement != null) {
+				statement.close();
+
+			}
+
+			if (connection != null) {
+				connection.close();
+
+			}
+		} catch (Exception e) {
+		}
 	}
 
 }

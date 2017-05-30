@@ -1,6 +1,8 @@
 import java.io.Serializable;
 import java.sql.SQLException;
 
+import org.w3c.dom.CDATASection;
+
 /**
  * A class for the program entry point and some test recipes.
  * 
@@ -27,7 +29,8 @@ public class CookBookApp implements Serializable {
 		recipe.addIngredient(new Ingredient("sesame oil", 4.0, "tablespoon"));
 		recipe.addIngredient(new Ingredient("dark soy sauce", 2.0, "teaspoon"));
 		recipe.addIngredient(new Ingredient("peanut oil", 3.0, "tablespoon"));
-		recipe.addIngredient(new Ingredient("dried red chilis", 12.0, "pieces", "stemmed, halved crosswise, and seeded"));
+		recipe.addIngredient(
+				new Ingredient("dried red chilis", 12.0, "pieces", "stemmed, halved crosswise, and seeded"));
 		recipe.addIngredient(new Ingredient("scallions", 5.0, "pieces", "white part only, thickly sliced crosswise"));
 		recipe.addIngredient(new Ingredient("garlic", 1.0, "cloves", "peeled, thinly sliced"));
 		recipe.addIngredient(new Ingredient("ginger", 0.5, "pieces", "peeled, minced"));
@@ -48,6 +51,8 @@ public class CookBookApp implements Serializable {
 
 		recipe.setPreparationTime(30);
 		recipe.setCookingTime(10);
+
+		
 
 		return recipe;
 	}
@@ -128,6 +133,17 @@ public class CookBookApp implements Serializable {
 		return recipe;
 	}
 
+	/**private static void createTag() throws SQLException {
+		DBConnector dbconnector = new DBConnector();
+
+		Tag tag_001 = new Tag(001, "sweet");
+		Tag tag_002 = new Tag(002, "salt");
+		Tag tag_003 = new Tag(003, "sour");
+		tag_001.tagToDatabase(dbconnector);
+		tag_002.tagToDatabase(dbconnector);
+		tag_003.tagToDatabase(dbconnector);
+	}
+
 	/**
 	 * Program entry point.
 	 * 
@@ -142,6 +158,10 @@ public class CookBookApp implements Serializable {
 		cb.add(createSuanLaFen());
 		cb.add(createGongBaoJiding());
 		cb.add(createHongShaoRou());
+		
+		//createTag();
+		
+		
 
 		// System.out.println("Was möchten Sie heute kochen?");
 		// System.out.print("Ich hätte gern:");
@@ -165,9 +185,6 @@ public class CookBookApp implements Serializable {
 
 		Recipe recipe_3 = cb.getRecipe("Suan La Fen");
 		recipe_3.recipeToDatabase(dbconnector);
-
-		Tag tag_1 = new Tag(001, "sweet");
-		tag_1.tagToDatabase(dbconnector);
 
 	}
 }
