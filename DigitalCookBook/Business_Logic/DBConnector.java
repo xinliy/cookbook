@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
+import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
+
 /**
  * the connector to connect the java code to database
  * 
@@ -59,33 +61,7 @@ public class DBConnector {
 		close();
 	}
 
-	public void insertIntoSteps(int recipe_id, int step, String description)
-			throws SQLException, ClassNotFoundException {
 
-		getAccess();
-		preparedStatement = connection
-				.prepareStatement("insert into preparation_step(recipe_id,step,description) values (?,?,?)");
-		preparedStatement.setInt(1, recipe_id);
-		preparedStatement.setInt(2, step);
-		preparedStatement.setString(3, description);
-		preparedStatement.executeUpdate();
-		close();
-	}
-
-	public void insertIntoIngredient(int recipe_id, String name, int quantity, String unit, String description)
-			throws SQLException, ClassNotFoundException {
-
-		getAccess();
-		preparedStatement = connection.prepareStatement(
-				"insert into ingredient(recipe_id,name,quantity,unit,description) values (?,?,?,?,?)");
-		preparedStatement.setInt(1, recipe_id);
-		preparedStatement.setString(2, name);
-		preparedStatement.setInt(3, quantity);
-		preparedStatement.setString(4, unit);
-		preparedStatement.setString(5, description);
-		preparedStatement.executeUpdate();
-		close();
-	}
 
 	public void printTable(String tableName) throws SQLException, ClassNotFoundException {
 		getAccess();
@@ -206,15 +182,11 @@ public class DBConnector {
 			getAccess();
 			LinkedList<String> steps = r.getSteps();
 
-			// String newData = r.normalizeArray(steps);
-
+		
 			for (int j = 0; j < steps.size(); j++) {
 				statement.executeUpdate("INSERT INTO preparation_step(recipeId,step, description) VALUES("
 						+ r.getRecipeId() + "," + (j + 1) + ", " + "'" + steps.get(j) + "')");
-				// final String selectSql= "select * from questionnaire where
-				// userprofileid=" + recipe_id +" ORDER by datecreated desc";
-				// System.out.println("the row count of the updated recipe is "
-				// + rowCount);
+				
 			}
 
 			close();
@@ -223,20 +195,43 @@ public class DBConnector {
 		}
 	}
 
-	public void addIngredient(Recipe r) throws SQLException, ClassNotFoundException {
+	public void addRecipeIngredient(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
 
 		LinkedList<Ingredient> ingredient = r.getIngredient();
 
 		for (int i = 0; i < ingredient.size(); i++) {
+			String query = "SELECT * from ingredients where ingredientName = " + "'"+ingredient.get(i).getIngredientName()+"'";
+			resultSet =statement.executeQuery(query);
+			resultSet.next();
+			int id = resultSet.getInt("ingredientId");
 			statement.executeUpdate(
-					"INSERT INTO ingredient (recipeId, ingredientName, quantity, unit, description) VALUES("
-							+ r.getRecipeId() + ",'" + ingredient.get(i).getIngredientName() + "', "
+					"INSERT INTO recipe_has_ingredients (recipe_recipeId, ingredients_ingredientId, quantity, unit, description) VALUES("
+							+ r.getRecipeId() + ",'" + id + "', "
 							+ ingredient.get(i).getQuantity() + ", " + "'" + ingredient.get(i).getUnit() + "'," + "'"
 							+ ingredient.get(i).getDescription() + "')");
 
-			close();
+			
 		}
+		close();
+
+	}
+	
+	
+
+	public void addIngredients(Recipe r) throws SQLException, ClassNotFoundException {
+		getAccess();
+
+		LinkedList<Ingredient> ingredient = r.getIngredient();
+		statement.executeUpdate("alter table ingredients auto_increment = 1" );
+		for (int i = 0; i < ingredient.size(); i++) {
+			
+			statement.executeUpdate( "INSERT INTO ingredients (ingredientName) VALUES(" 
+					 + "'" + ingredient.get(i).getIngredientName() + "' ) " );
+
+			
+		}
+	close();	
 
 	}
 

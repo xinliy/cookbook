@@ -1,7 +1,6 @@
 import java.io.Serializable;
 import java.sql.SQLException;
 
-import org.w3c.dom.CDATASection;
 
 /**
  * A class for the program entry point and some test recipes.
@@ -15,8 +14,10 @@ public class CookBookApp implements Serializable {
 	 * Creates a Gong Bao Jiding recipe.
 	 * 
 	 * @return the new recipe
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 */
-	private static Recipe createGongBaoJiding() {
+	private static Recipe createGongBaoJiding() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(001, "Gong Bao Jiding", "Sichuan Dish", 4);
 
 		recipe.addIngredient(new Ingredient("cornstarch", 1.0, "tablespoon"));
@@ -61,8 +62,10 @@ public class CookBookApp implements Serializable {
 	 * Creates a Hong Shao Rou recipe.
 	 * 
 	 * @return the recipe
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 */
-	private static Recipe createHongShaoRou() {
+	private static Recipe createHongShaoRou() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(002, "Hong Shao Rou", "Hunan Dish", 4);
 
 		recipe.addIngredient(new Ingredient("pork belly", 0.5, "kg", "cut into 2cm pieces"));
@@ -95,8 +98,10 @@ public class CookBookApp implements Serializable {
 	 * Creates a Suan La Fen recipe.
 	 * 
 	 * @return the recipe
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 */
-	private static Recipe createSuanLaFen() {
+	private static Recipe createSuanLaFen() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(003, "Suan La Fen", "Sichuan Dish", 2);
 
 		recipe.addIngredient(new Ingredient("potato noodles", 1.0, "bunch"));

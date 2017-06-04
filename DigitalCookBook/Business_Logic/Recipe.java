@@ -195,7 +195,8 @@ public class Recipe implements Serializable {
 		try {
 			dbconnector.addRecipe(this);
 			dbconnector.addPreparationStep(this);
-			dbconnector.addIngredient(this);
+			dbconnector.addIngredients(this);
+			dbconnector.addRecipeIngredient(this);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

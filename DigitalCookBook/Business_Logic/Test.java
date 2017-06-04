@@ -11,7 +11,10 @@ public class Test {
 		
 		//dbConnector.deleteIngredient("garlic");
 
-		dbConnector.insertIntoTag(2, "sad");
+		//dbConnector.insertIntoTag(2, "sad");
+		
+		Ingredient ceshi = new Ingredient("ceshi", 20, "kg");
+		//Ingredient sushi = new Ingredient("sushi", 79, "hh");
 	}
 
 }

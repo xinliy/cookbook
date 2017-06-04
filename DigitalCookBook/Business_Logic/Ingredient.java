@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.sql.SQLException;
 
 /**
  * ingredient's attributes and constructors
@@ -13,6 +14,7 @@ public class Ingredient implements Serializable {
 	private double quantity;
 	private String unit;
 	private String description;
+	
 
 	/**
 	 * one kind of constructor of Ingredient
@@ -23,11 +25,15 @@ public class Ingredient implements Serializable {
 	 *            the quantity of ingredient
 	 * @param unit
 	 *            the unit of ingredient
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 */
-	public Ingredient(String ingredientName, double quantity, String unit) {
+	public Ingredient(String ingredientName, double quantity, String unit) throws ClassNotFoundException, SQLException {
 		this.ingredientName = ingredientName;
 		this.quantity = quantity;
 		this.unit = unit;
+		
+		
 	}
 
 	/**
@@ -37,12 +43,17 @@ public class Ingredient implements Serializable {
 	 * @param quantity
 	 * @param unit
 	 * @param description
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 */
-	public Ingredient(String ingredientName, double quantity, String unit, String description) {
+	public Ingredient(String ingredientName, double quantity, String unit, String description) throws ClassNotFoundException, SQLException {
 		this.ingredientName = ingredientName;
 		this.quantity = quantity;
 		this.unit = unit;
 		this.description = description;
+		
+	
+		
 	}
 
 	/**
@@ -81,6 +92,8 @@ public class Ingredient implements Serializable {
 	public String getDescription(){
 		return description;
 	}
+	
+
 	public void setIngredientName(String newIngredientName) {
 		ingredientName = newIngredientName;
 	}
@@ -111,5 +124,6 @@ public class Ingredient implements Serializable {
 		return "Ingredient [ingredientName=" + ingredientName + ", quantity=" + quantity + ", unit=" + unit
 				+ ", description=" + description + "]" + "\n";
 	}
+	
 
 }
