@@ -8,7 +8,6 @@ import java.sql.SQLException;
  */
 public class Tag {
 
-	private int tagId;
 	private String tagContent;
 
 	/**
@@ -19,8 +18,8 @@ public class Tag {
 	 * @param tagContent
 	 *            tag's content
 	 */
-	public Tag(int tagId, String tagContent) {
-		this.tagId = tagId;
+	public Tag( String tagContent) {
+		
 		this.tagContent = tagContent;
 	}
 
@@ -29,10 +28,7 @@ public class Tag {
 	 * 
 	 * @return id of tag
 	 */
-	public int getTagId() {
-		return this.tagId;
-	}
-
+	
 	/**
 	 * getter of tagContent
 	 * 
@@ -48,9 +44,7 @@ public class Tag {
 	 * @param tagId
 	 *            new id you want to give tag
 	 */
-	public void setTagId(int tagId) {
-		this.tagId = tagId;
-	}
+	
 
 	/**
 	 * setter of tagContent
@@ -69,12 +63,8 @@ public class Tag {
 	 *            the instance of DBConnector
 	 * @throws SQLException
 	 */
-	public void tagToDatabase(DBConnector dbconnector) throws SQLException {
-		try {
-			dbconnector.addTag(this);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+	
+		
+	
 
 }

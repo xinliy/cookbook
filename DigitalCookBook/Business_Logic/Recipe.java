@@ -120,7 +120,7 @@ public class Recipe implements Serializable {
 	}
 
 	public LinkedList<Tag> getTagList() {
-		return tag;
+		return this.tag;
 	}
 
 	public void setDishName(String newDishName) {
@@ -197,6 +197,7 @@ public class Recipe implements Serializable {
 			dbconnector.addPreparationStep(this);
 			dbconnector.addIngredients(this);
 			dbconnector.addRecipeIngredient(this);
+			dbconnector.addTag(this);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

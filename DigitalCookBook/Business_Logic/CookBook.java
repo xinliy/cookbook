@@ -12,7 +12,7 @@ public class CookBook implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String cookBookName;
 	private LinkedList<Recipe> recipeList = new LinkedList<Recipe>();
-	//private LinkedList<Tag> tagList = new LinkedList<Tag>();
+	
 
 	/**
 	 * constructor

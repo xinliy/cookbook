@@ -168,12 +168,18 @@ public class DBConnector {
 
 	}
 
-	public void addTag(Tag t) throws SQLException, ClassNotFoundException {
+	public void addTag(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
+		
+		LinkedList<Tag>tags = r.getTagList();
+		statement.executeUpdate("ALTER TABLE tag auto_increment =1");
+		
+		for(int i =0; i<tags.size();i++){
+			statement.executeUpdate( "INSERT INTO tag (tagContent) VALUES(" 
+					 + "'" + tags.get(i).getTagContent() + "' ) " );	
+		}
 
-		statement.executeUpdate(
-				"INSERT INTO tag (tagId, tagContent) VALUES(" + t.getTagId() + ",'" + t.getTagContent() + "')");
-
+		
 		close();
 	}
 
