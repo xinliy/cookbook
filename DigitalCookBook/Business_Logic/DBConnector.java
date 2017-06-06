@@ -173,10 +173,21 @@ public class DBConnector {
 		
 		LinkedList<Tag>tags = r.getTagList();
 		statement.executeUpdate("ALTER TABLE tag auto_increment =1");
+		System.out.println("111111111111111");
 		
 		for(int i =0; i<tags.size();i++){
-			statement.executeUpdate( "INSERT INTO tag (tagContent) VALUES(" 
-					 + "'" + tags.get(i).getTagContent() + "' ) " );	
+			String query = "SELECT * from tag where tagContent = "+ "'" + tags.get(i).getTagContent() +"'";
+			resultSet= statement.executeQuery(query);
+			System.out.println("22222222222");
+			
+			
+			try{
+				statement.executeUpdate( "INSERT INTO tag (tagContent) VALUES(" 
+					 + "'" + tags.get(i).getTagContent() + "' ) " );
+			}catch(SQLException exception){
+				System.out.println("5555555555");
+			}
+				
 		}
 
 		
@@ -200,6 +211,28 @@ public class DBConnector {
 			e.printStackTrace();
 		}
 	}
+	
+	public void addRecipeTag(Recipe r) throws SQLException, ClassNotFoundException {
+		getAccess();
+
+		LinkedList<Tag> tag = r.getTagList();
+
+		for (int i = 0; i < tag.size(); i++) {
+			String query = "SELECT * from tag where tagContent = " + "'" + tag.get(i).getTagContent()+"'";
+			resultSet =statement.executeQuery(query);
+			resultSet.next();
+			int id = resultSet.getInt("tagId");
+			statement.executeUpdate(
+					"INSERT INTO recipe_has_tag (recipe_recipeId, tag_tagId) VALUES("
+							+ r.getRecipeId() + ",'" + id + "' "
+							+ ")");
+
+			
+		}
+		close();
+
+	}
+
 
 	public void addRecipeIngredient(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
@@ -231,9 +264,13 @@ public class DBConnector {
 		LinkedList<Ingredient> ingredient = r.getIngredient();
 		statement.executeUpdate("alter table ingredients auto_increment = 1" );
 		for (int i = 0; i < ingredient.size(); i++) {
-			
-			statement.executeUpdate( "INSERT INTO ingredients (ingredientName) VALUES(" 
+			try{
+				statement.executeUpdate( "INSERT INTO ingredients (ingredientName) VALUES(" 
 					 + "'" + ingredient.get(i).getIngredientName() + "' ) " );
+			}catch (SQLException e) {
+				
+			}
+			
 
 			
 		}
