@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
+import javax.naming.directory.SearchControls;
+
 import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
 
 /**
@@ -50,18 +52,6 @@ public class DBConnector {
 		preparedStatement.executeUpdate();
 		close();
 	}
-
-	public void insertIntoTag(int tagId, String tagContent) throws SQLException, ClassNotFoundException {
-
-		getAccess();
-		preparedStatement = connection.prepareStatement("insert into tag(tagId,tagContent) values (?,?)");
-		preparedStatement.setInt(1, tagId);
-		preparedStatement.setString(2, tagContent);
-		preparedStatement.executeUpdate();
-		close();
-	}
-
-
 
 	public void printTable(String tableName) throws SQLException, ClassNotFoundException {
 		getAccess();
@@ -119,26 +109,51 @@ public class DBConnector {
 				}
 			}
 
-		} else if (tableName.equals("ingredient")) {
+		} else if (tableName.equals("recipe_has_ingredients")) {
 			while (resultSet.next()) {
 				try {
 					int recipeId = resultSet.getInt("recipeId");
-					String ingredientName = resultSet.getString("ingredientName");
+					int ingredientId = resultSet.getInt("ingredientId");
 					int quantity = resultSet.getInt("quantity");
 					String unit = resultSet.getString("unit");
 					String description = resultSet.getString("description");
 
 					System.out.println("recipeId: " + recipeId);
-					System.out.println("ingredientName: " + ingredientName);
+					System.out.println("ingredientName: " + ingredientId);
 					System.out.println("quantity: " + quantity);
 					System.out.println("unit: " + unit);
 					System.out.println("description: " + description);
 				} catch (Exception e) {
 				}
 			}
-			close();
-		}
 
+		} else if (tableName.equals("ingredients")) {
+			while (resultSet.next()) {
+				try {
+					int ingredientId = resultSet.getInt("ingredientId");
+					String ingredientName = resultSet.getString("ingredientName");
+
+					System.out.println("ingredientId: " + ingredientId);
+					System.out.println("ingredientName: " + ingredientName);
+
+				} catch (Exception e) {
+				}
+			}
+		} else if (tableName.equals("recipe_has_tag")) {
+			while (resultSet.next()) {
+				try {
+					int recipeId = resultSet.getInt("recipe_recipeId");
+					int tagId = resultSet.getInt("tag_tagId");
+
+					System.out.println("recipeId: " + recipeId);
+					System.out.println("tagId: " + tagId);
+				} catch (Exception e) {
+
+				}
+			}
+
+		}
+		close();
 	}
 
 	public void getColumnName(String tableName) throws SQLException, ClassNotFoundException {
@@ -170,27 +185,23 @@ public class DBConnector {
 
 	public void addTag(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
-		
-		LinkedList<Tag>tags = r.getTagList();
+
+		LinkedList<Tag> tags = r.getTagList();
 		statement.executeUpdate("ALTER TABLE tag auto_increment =1");
-		System.out.println("111111111111111");
-		
-		for(int i =0; i<tags.size();i++){
-			String query = "SELECT * from tag where tagContent = "+ "'" + tags.get(i).getTagContent() +"'";
-			resultSet= statement.executeQuery(query);
-			System.out.println("22222222222");
-			
-			
-			try{
-				statement.executeUpdate( "INSERT INTO tag (tagContent) VALUES(" 
-					 + "'" + tags.get(i).getTagContent() + "' ) " );
-			}catch(SQLException exception){
-				System.out.println("5555555555");
+
+		for (int i = 0; i < tags.size(); i++) {
+			String query = "SELECT * from tag where tagContent = " + "'" + tags.get(i).getTagContent() + "'";
+			resultSet = statement.executeQuery(query);
+
+			try {
+				statement.executeUpdate(
+						"INSERT INTO tag (tagContent) VALUES(" + "'" + tags.get(i).getTagContent() + "' ) ");
+			} catch (SQLException exception) {
+
 			}
-				
+
 		}
 
-		
 		close();
 	}
 
@@ -199,11 +210,10 @@ public class DBConnector {
 			getAccess();
 			LinkedList<String> steps = r.getSteps();
 
-		
 			for (int j = 0; j < steps.size(); j++) {
 				statement.executeUpdate("INSERT INTO preparation_step(recipeId,step, description) VALUES("
 						+ r.getRecipeId() + "," + (j + 1) + ", " + "'" + steps.get(j) + "')");
-				
+
 			}
 
 			close();
@@ -211,28 +221,24 @@ public class DBConnector {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void addRecipeTag(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
 
 		LinkedList<Tag> tag = r.getTagList();
 
 		for (int i = 0; i < tag.size(); i++) {
-			String query = "SELECT * from tag where tagContent = " + "'" + tag.get(i).getTagContent()+"'";
-			resultSet =statement.executeQuery(query);
+			String query = "SELECT * from tag where tagContent = " + "'" + tag.get(i).getTagContent() + "'";
+			resultSet = statement.executeQuery(query);
 			resultSet.next();
 			int id = resultSet.getInt("tagId");
-			statement.executeUpdate(
-					"INSERT INTO recipe_has_tag (recipe_recipeId, tag_tagId) VALUES("
-							+ r.getRecipeId() + ",'" + id + "' "
-							+ ")");
+			statement.executeUpdate("INSERT INTO recipe_has_tag (recipe_recipeId, tag_tagId) VALUES(" + r.getRecipeId()
+					+ ",'" + id + "' " + ")");
 
-			
 		}
 		close();
 
 	}
-
 
 	public void addRecipeIngredient(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
@@ -240,42 +246,76 @@ public class DBConnector {
 		LinkedList<Ingredient> ingredient = r.getIngredient();
 
 		for (int i = 0; i < ingredient.size(); i++) {
-			String query = "SELECT * from ingredients where ingredientName = " + "'"+ingredient.get(i).getIngredientName()+"'";
-			resultSet =statement.executeQuery(query);
+			String query = "SELECT * from ingredients where ingredientName = " + "'"
+					+ ingredient.get(i).getIngredientName() + "'";
+			resultSet = statement.executeQuery(query);
 			resultSet.next();
 			int id = resultSet.getInt("ingredientId");
 			statement.executeUpdate(
 					"INSERT INTO recipe_has_ingredients (recipe_recipeId, ingredients_ingredientId, quantity, unit, description) VALUES("
-							+ r.getRecipeId() + ",'" + id + "', "
-							+ ingredient.get(i).getQuantity() + ", " + "'" + ingredient.get(i).getUnit() + "'," + "'"
-							+ ingredient.get(i).getDescription() + "')");
+							+ r.getRecipeId() + ",'" + id + "', " + ingredient.get(i).getQuantity() + ", " + "'"
+							+ ingredient.get(i).getUnit() + "'," + "'" + ingredient.get(i).getDescription() + "')");
 
-			
 		}
 		close();
 
 	}
-	
-	
 
 	public void addIngredients(Recipe r) throws SQLException, ClassNotFoundException {
 		getAccess();
 
 		LinkedList<Ingredient> ingredient = r.getIngredient();
-		statement.executeUpdate("alter table ingredients auto_increment = 1" );
+		statement.executeUpdate("alter table ingredients auto_increment = 1");
 		for (int i = 0; i < ingredient.size(); i++) {
-			try{
-				statement.executeUpdate( "INSERT INTO ingredients (ingredientName) VALUES(" 
-					 + "'" + ingredient.get(i).getIngredientName() + "' ) " );
-			}catch (SQLException e) {
-				
+			try {
+				statement.executeUpdate("INSERT INTO ingredients (ingredientName) VALUES(" + "'"
+						+ ingredient.get(i).getIngredientName() + "' ) ");
+			} catch (SQLException e) {
+
 			}
-			
 
-			
 		}
-	close();	
+		close();
 
+	}
+
+	public void search(String input, String tagContent) throws SQLException, ClassNotFoundException {
+
+		getAccess();
+
+		String searchRecipe = " select DISTINCT t1.recipeId from recipe as t1, tag as t2 where t1.dishName = '" + input
+				+ "' and t2.tagContent = '" + tagContent + "'";
+		String searchIngredient = "select DISTINCT t1.recipe_recipeId from recipe_has_ingredients as t1, ingredients as t2 where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName = '"
+				+ input + "'"
+				+ "and t1.recipe_recipeId IN (select t3.recipe_recipeId  from recipe_has_tag as t3, tag as t4 where t3.tag_tagId = t4.tagId and t4.tagContent = '"
+				+ tagContent + "')";
+		resultSet = statement.executeQuery(searchRecipe);
+		if (!resultSet.next()) {
+			System.out.println("Not a recipe!");
+
+		} else {
+			resultSet.beforeFirst();
+			while (resultSet.next()) {
+				int searchResult = resultSet.getInt("recipeId");
+				System.out.println(searchResult);
+
+			}
+
+		}
+
+		resultSet = statement.executeQuery(searchIngredient);
+		if (!resultSet.next()) {
+			System.out.println("Not a ingredient!");
+		} else {
+			resultSet.beforeFirst();
+			while (resultSet.next()) {
+				int searchResult = resultSet.getInt("recipe_recipeId");
+				System.out.println(searchResult);
+
+			}
+
+		}
+		close();
 	}
 
 	private void close() {

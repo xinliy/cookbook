@@ -4,6 +4,7 @@ public class Test {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		
-
+		DBConnector dbConnector = new DBConnector();
+		dbConnector.printTable("recipe_has_tag");
 }
 }

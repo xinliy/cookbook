@@ -146,25 +146,8 @@ public class CookBookApp implements Serializable {
 		return recipe;
 	}
 
-	/**private static void createTag() throws SQLException {
-		DBConnector dbconnector = new DBConnector();
-
-		Tag tag_001 = new Tag(001, "sweet");
-		Tag tag_002 = new Tag(002, "salt");
-		Tag tag_003 = new Tag(003, "sour");
-		tag_001.tagToDatabase(dbconnector);
-		tag_002.tagToDatabase(dbconnector);
-		tag_003.tagToDatabase(dbconnector);
-	}
-
-	/**
-	 * Program entry point.
-	 * 
-	 * @param args
-	 *            command line arguments; not used.
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
+	
+	 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		CookBook cb = new CookBook("Chinese Cuisine");
 
@@ -172,23 +155,7 @@ public class CookBookApp implements Serializable {
 		cb.add(createGongBaoJiding());
 		cb.add(createHongShaoRou());
 		
-		//createTag();
 		
-		
-
-		// System.out.println("Was möchten Sie heute kochen?");
-		// System.out.print("Ich hätte gern:");
-		// Scanner scanner = new Scanner(System.in);
-		// String rcp = scanner.nextLine();
-		// Recipe recipe = cb.getRecipe(rcp);
-		// System.out.println("Wie viele Leute insgesamt?");
-		// int sv= scanner.nextInt();
-		// scanner.close();
-		// recipe.serializing();
-		// cb.reviseServings(rcp, sv);
-		// System.out.println(recipe);
-
-		// revise the content of database
 		DBConnector dbconnector = new DBConnector();
 		Recipe recipe_1 = cb.getRecipe("Gong Bao Jiding");
 		recipe_1.recipeToDatabase(dbconnector);
