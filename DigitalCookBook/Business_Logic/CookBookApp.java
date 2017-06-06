@@ -94,7 +94,7 @@ public class CookBookApp implements Serializable {
 		recipe.setPreparationTime(5);
 		recipe.setCookingTime(100);
 		
-		recipe.addTag(new Tag("spicy"));
+		recipe.addTag(new Tag("sweet"));
 
 		return recipe;
 	}
@@ -140,8 +140,8 @@ public class CookBookApp implements Serializable {
 		recipe.setPreparationTime(30);
 		recipe.setCookingTime(5);
 		
-		recipe.addTag(new Tag("sweet"));
-		recipe.addTag(new Tag("sauce"));
+		recipe.addTag(new Tag("spicy"));
+		recipe.addTag(new Tag("sour"));
 
 		return recipe;
 	}
