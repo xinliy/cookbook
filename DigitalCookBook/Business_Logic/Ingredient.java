@@ -10,7 +10,7 @@ import java.sql.SQLException;
 @SuppressWarnings("serial")
 public class Ingredient implements Serializable {
 
-	public String ingredientName;
+	private String ingredientName;
 	private double quantity;
 	private String unit;
 	private String description;
