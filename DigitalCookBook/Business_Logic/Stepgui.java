@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -41,22 +42,13 @@ public class Stepgui {
 		frame.getContentPane().add(panel);
 
 		placeComponents(panel);
-
+	
 		
-
 		
-
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(117, 88, 80, 19);
 		panel.add(textArea);
-		/*
-		JScrollPane jScrollPane = new JScrollPane(textArea);
-		jScrollPane.setBounds(117, 88, 80, 19);
-	
-		jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		frame.add(jScrollPane);
-**/
+		
 		JTextArea textArea_1 = new JTextArea();
 		textArea_1.setBounds(208, 16, 225, 29);
 		panel.add(textArea_1);
@@ -73,108 +65,7 @@ public class Stepgui {
 		textArea_3.setBounds(15, 362, 80, 19);
 		panel.add(textArea_3);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(352, 55, 141, 79);
-		panel.add(panel_1);
 		
-		textField = new JTextField();
-		panel_1.setLayout(new FlowLayout());
-		panel_1.add(textField);
-		textField.setColumns(10);
-		
-		
-		
-		JScrollPane scrollPane = new JScrollPane(textField);
-		
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		panel_1.add(scrollPane);
-		
-		
-		
-		
-
-		frame.setVisible(true);
-
-		btnShow.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Controller controller = new Controller();
-				try {
-					String recipeName = "Suan La Fen";
-					Recipe targetRecipe = controller.catchRecipe(recipeName);
-					int ingredientNumber = controller.getIngredientNumbaer(recipeName);
-					int stepNumber = controller.getStepNumber(recipeName);
-					textArea.append(String.valueOf(targetRecipe.getPreparationTime()));
-					textArea_1.append(targetRecipe.getDishName());
-					textArea_2.append(String.valueOf(targetRecipe.getCookingTime()));
-
-					textArea_3.append("STEP:");
-					textArea_3.setBounds(20, 250, 80, 19);
-					//textArea_3.setBounds(20, 180 + 16 * ingredientNumber, 80, 19);
-					textArea_3.setBackground(new Color(238, 238, 238));
-
-					DefaultTableModel model = new DefaultTableModel();
-					model.addColumn("ingredient");
-
-					for (int i = 0; i < ingredientNumber; i++) {
-
-						model.addRow(new Object[] { controller.getIngredientSentence(recipeName, i) });
-					}
-
-					table = new JTable(model);
-					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
-					table.setBounds(15, 175, 483, 50);
-					table.setShowGrid(false);
-					
-					JScrollPane tableScrollPane = new JScrollPane(table);
-					tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-					
-					panel.add(table);
-
-					panel.add(tableScrollPane);
-					
-					
-					
-					DefaultTableModel model1 = new DefaultTableModel();
-					model1.addColumn("steps");
-
-					for (int i = 0; i < stepNumber; i++) {
-
-						model1.addRow(new Object[] { controller.getStepSentence(recipeName, i) });
-					}
-
-					table1 = new JTable(model1);
-					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
-					table1.setBounds(15, 275, 483, 50);
-					table1.setShowGrid(false);
-					panel.add(table1);
-
-
-
-					frame.revalidate();
-
-				} catch (ClassNotFoundException e1) {
-
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-
-					e1.printStackTrace();
-				}
-
-			}
-
-		});
-
-	}
-
-	private static void placeComponents(JPanel panel) {
-		/**
-		 * 
-		 */
-
 		panel.setLayout(null);
 		JLabel prepareTime = new JLabel("Preparing time:");
 		prepareTime.setBounds(15, 80, 200, 25);
@@ -204,6 +95,51 @@ public class Stepgui {
 		serving.configureEditor(editor, serving);
 		serving.setBounds(610, 50, 60, 25);
 		panel.add(serving);
+		
+		
+		//change the cooking time and prepare time
+		serving.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String recipeName = "Suan La Fen";
+			
+				int changedServing = serving.getSelectedIndex()+1;
+				Controller controller = new Controller();
+				Recipe targetRecipe;
+				
+				
+			
+				
+				
+				
+				
+				
+				try {
+					targetRecipe = controller.catchRecipe(recipeName);
+					
+					LinkedList<Integer>cookingTimePreTime= new LinkedList<Integer> ();
+					 cookingTimePreTime= controller.changeServingRetunList(textArea_1.getText(), changedServing);
+					
+					System.out.println(cookingTimePreTime.get(0));
+					textArea.setText(String.valueOf(cookingTimePreTime.get(0)));
+					textArea_2.setText(String.valueOf(cookingTimePreTime.get(1)));
+					System.out.println("1111111111");
+					
+					
+					
+					
+					
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 
 		JButton editButton = new JButton("EDIT");
 		editButton.setBounds(670, 10, 80, 40);
@@ -217,7 +153,107 @@ public class Stepgui {
 		JButton deleteButton = new JButton("DELETE");
 		deleteButton.setBounds(550, 400, 110, 40);
 		deleteButton.setBackground(new Color(197, 0, 0));
-		panel.add(deleteButton);
+		panel.add(deleteButton);	
+
+		
+
+		
+
+		
+	
+		
+		
+
+		frame.setVisible(true);
+
+		btnShow.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Controller controller = new Controller();
+				try {
+					String recipeName = "Suan La Fen";
+					Recipe targetRecipe = controller.catchRecipe(recipeName);
+					int ingredientNumber = controller.getIngredientNumbaer(recipeName);
+					int stepNumber = controller.getStepNumber(recipeName);
+					textArea.append(String.valueOf(targetRecipe.getPreparationTime()));
+					textArea_1.append(targetRecipe.getDishName());
+					textArea_2.append(String.valueOf(targetRecipe.getCookingTime()));
+
+					textArea_3.append("STEP:");
+					textArea_3.setBounds(20, 255, 80, 19);
+					//textArea_3.setBounds(20, 180 + 16 * ingredientNumber, 80, 19);
+					textArea_3.setBackground(new Color(238, 238, 238));
+
+					DefaultTableModel model = new DefaultTableModel();
+					model.addColumn("ingredient");
+
+					for (int i = 0; i < ingredientNumber; i++) {
+
+						model.addRow(new Object[] { controller.getIngredientSentence(recipeName, i) });
+					}
+
+					table = new JTable(model);
+					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
+					table.setBounds(15, 175, 483, 50);
+					table.setShowGrid(false);
+					
+					JScrollPane tableScrollPane = new JScrollPane(table);
+					tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+					tableScrollPane.setBounds(15,175,483,80);
+					
+					//panel.add(table);
+
+					panel.add(tableScrollPane);
+					
+					
+					
+					DefaultTableModel model1 = new DefaultTableModel();
+					model1.addColumn("steps");
+
+					for (int i = 0; i < stepNumber; i++) {
+
+						model1.addRow(new Object[] { controller.getStepSentence(recipeName, i) });
+					}
+
+					table1 = new JTable(model1);
+					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
+					table1.setBounds(15, 275, 483, 50);
+					table1.setShowGrid(false);
+					panel.add(table1);
+					
+					JScrollPane tableScrollPane1 = new JScrollPane(table1);
+					tableScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+					tableScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					tableScrollPane1.setBounds(15, 275, 483, 80);
+					
+					panel.add(tableScrollPane1);
+
+
+
+					frame.revalidate();
+
+				} catch (ClassNotFoundException e1) {
+
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+
+					e1.printStackTrace();
+				}
+
+			}
+
+		});
+
+	}
+
+	private static void placeComponents(JPanel panel) {
+		/**
+		 * 
+		 */
+
+		
 
 	}
 }

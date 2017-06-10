@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 public class Controller {
 	
@@ -39,6 +40,16 @@ public class Controller {
 		Ingredient ingredient = cookBookApp.cookBook.getRecipe(recipeName).getIngredient().get(number);
 		String ingredientSentence = ingredient.getIngredientName()+String.valueOf(ingredient.getQuantity())+ingredient.getUnit()+ingredient.getDescription();
 		return ingredientSentence;
+	}
+	
+	public LinkedList<Integer>  changeServingRetunList(String recipeName,int changeServing) throws ClassNotFoundException, SQLException{
+		CookBookApp cookBookApp = new CookBookApp();
+		cookBookApp.cookBook.reviseServings(recipeName, changeServing);
+		System.out.println(cookBookApp.cookBook.getRecipe(recipeName).getPreparationTime());
+		LinkedList<Integer> result = new LinkedList<>();
+		result.add(cookBookApp.cookBook.getRecipe(recipeName).getCookingTime());
+		result.add(cookBookApp.cookBook.getRecipe(recipeName).getPreparationTime());
+		return result;
 	}
 
 }
