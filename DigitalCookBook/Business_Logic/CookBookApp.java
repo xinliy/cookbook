@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.sql.SQLException;
 
+import com.mysql.jdbc.StatementInterceptor;
 
 /**
  * A class for the program entry point and some test recipes.
@@ -14,9 +15,22 @@ public class CookBookApp implements Serializable {
 	 * Creates a Gong Bao Jiding recipe.
 	 * 
 	 * @return the new recipe
-	 * @throws ClassNotFoundException 
-	 * @throws SQLException 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
 	 */
+	CookBook cookBook;
+
+	public CookBookApp() throws ClassNotFoundException, SQLException {
+
+		cookBook = new CookBook("Chinese Cuisine");
+
+		cookBook.add(createSuanLaFen());
+		cookBook.add(createGongBaoJiding());
+		cookBook.add(createHongShaoRou());
+
+	
+	}
+
 	private static Recipe createGongBaoJiding() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(001, "Gong Bao Jiding", "Sichuan Dish", 4);
 
@@ -52,11 +66,9 @@ public class CookBookApp implements Serializable {
 
 		recipe.setPreparationTime(30);
 		recipe.setCookingTime(10);
-		
+
 		recipe.addTag(new Tag("sweet"));
 		recipe.addTag(new Tag("salty"));
-
-		
 
 		return recipe;
 	}
@@ -65,8 +77,8 @@ public class CookBookApp implements Serializable {
 	 * Creates a Hong Shao Rou recipe.
 	 * 
 	 * @return the recipe
-	 * @throws ClassNotFoundException 
-	 * @throws SQLException 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
 	 */
 	private static Recipe createHongShaoRou() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(002, "Hong Shao Rou", "Hunan Dish", 4);
@@ -93,7 +105,7 @@ public class CookBookApp implements Serializable {
 
 		recipe.setPreparationTime(5);
 		recipe.setCookingTime(100);
-		
+
 		recipe.addTag(new Tag("sweet"));
 
 		return recipe;
@@ -103,8 +115,8 @@ public class CookBookApp implements Serializable {
 	 * Creates a Suan La Fen recipe.
 	 * 
 	 * @return the recipe
-	 * @throws ClassNotFoundException 
-	 * @throws SQLException 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
 	 */
 	private static Recipe createSuanLaFen() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(003, "Suan La Fen", "Sichuan Dish", 2);
@@ -139,32 +151,30 @@ public class CookBookApp implements Serializable {
 
 		recipe.setPreparationTime(30);
 		recipe.setCookingTime(5);
-		
+
 		recipe.addTag(new Tag("spicy"));
 		recipe.addTag(new Tag("sour"));
 
 		return recipe;
 	}
 
-	
-	 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		CookBook cb = new CookBook("Chinese Cuisine");
+		CookBook cookBook = new CookBook("Chinese Cuisine");
 
-		cb.add(createSuanLaFen());
-		cb.add(createGongBaoJiding());
-		cb.add(createHongShaoRou());
-		
-		
+		cookBook.add(createSuanLaFen());
+		cookBook.add(createGongBaoJiding());
+		cookBook.add(createHongShaoRou());
+
 		DBConnector dbconnector = new DBConnector();
-		Recipe recipe_1 = cb.getRecipe("Gong Bao Jiding");
+		Recipe recipe_1 = cookBook.getRecipe("Gong Bao Jiding");
 		recipe_1.recipeToDatabase(dbconnector);
 
-		Recipe recipe_2 = cb.getRecipe("Hong Shao Rou");
+		Recipe recipe_2 = cookBook.getRecipe("Hong Shao Rou");
 		recipe_2.recipeToDatabase(dbconnector);
 
-		Recipe recipe_3 = cb.getRecipe("Suan La Fen");
+		Recipe recipe_3 = cookBook.getRecipe("Suan La Fen");
 		recipe_3.recipeToDatabase(dbconnector);
 
 	}
+
 }
