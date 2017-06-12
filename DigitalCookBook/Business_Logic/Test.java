@@ -1,21 +1,30 @@
 import java.sql.SQLException;
-
+import java.util.LinkedList;
 import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.sun.media.jfxmedia.events.NewFrameEvent;
+
 public class Test {
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-		String recipeName = "Hong Shao Rou";
-		int changeServing= 10;
+	
 	Controller controller = new Controller();
 	DBConnector dbConnector = new DBConnector();
-	controller.changeServingRetunList(recipeName, changeServing);
-	//dbConnector.updateServings(recipeName, changeServing);
+	LinkedList<Recipe>recipes=new LinkedList<>();
+	recipes=dbConnector.search("garlic", "sweet");
+	//recipes.add(dbConnector.selectRecipeByName("Hong Shao Rou"));
+	//Recipe recipe = dbConnector.selectRecipeByName("Hong Shao Rou");
+	for (int i = 0; i < recipes.size(); i++) {
+		System.out.println(recipes.get(i));
+	}
+	
+	
+	
 	
 }
 }

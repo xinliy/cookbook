@@ -26,7 +26,12 @@ public class DBConnector {
 	private ResultSet resultSet = null;
 
 	private Recipe recipe;
-
+	private LinkedList<Recipe> recipeList;
+	
+	
+	public DBConnector() {
+		this.recipeList=new LinkedList<>();
+	}
 	public void getAccess() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 		// Setup the connection with the DB
@@ -283,11 +288,11 @@ public class DBConnector {
 
 	}
 
-	public void search(String input, String tagContent) throws SQLException, ClassNotFoundException {
+	public LinkedList<Recipe> search(String input, String tagContent) throws SQLException, ClassNotFoundException {
 
 		getAccess();
 
-		String searchRecipe = " select DISTINCT t1.recipeId from recipe as t1, tag as t2 where t1.dishName = '" + input
+		String searchRecipe = " select DISTINCT t1.dishName from recipe as t1, tag as t2 where t1.dishName = '" + input
 				+ "' and t2.tagContent = '" + tagContent + "'";
 		String searchIngredient = "select DISTINCT t1.recipe_recipeId from recipe_has_ingredients as t1, ingredients as t2 where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName = '"
 				+ input + "'"
@@ -300,7 +305,8 @@ public class DBConnector {
 		} else {
 			resultSet.beforeFirst();
 			while (resultSet.next()) {
-				int searchResult = resultSet.getInt("recipeId");
+				String searchResult = resultSet.getString("dishName");
+				recipeList.add(selectRecipeByName(searchResult));
 				System.out.println(searchResult);
 
 			}
@@ -314,12 +320,20 @@ public class DBConnector {
 			resultSet.beforeFirst();
 			while (resultSet.next()) {
 				int searchResult = resultSet.getInt("recipe_recipeId");
+				String sql = "SELECT DISTINCT dishname from recipe, recipe_has_ingredients where recipe.recipeId= recipe_has_ingredients.recipe_recipeId and recipe_recipeId =  "+searchResult;
+				ResultSet resultSet1 = statement.executeQuery(sql);
+				while(resultSet1.next()){
+					String dishName = resultSet1.getString("dishName");
+					recipeList.add(selectRecipeByName(dishName));
+				}
+				
 				System.out.println(searchResult);
 
 			}
 
 		}
 		close();
+		return recipeList;
 	}
 
 	public Recipe selectRecipeByName(String recipeName) throws ClassNotFoundException, SQLException {
@@ -408,6 +422,7 @@ public class DBConnector {
 		String updateServingQuantity = "Update recipe_has_ingredients inner join recipe on recipe.recipeId = recipe_has_ingredients.recipe_recipeId "
 				+ "set quantity= "+times+"*quantity where recipe.dishName ="+"'"+recipeName+"'";
 		statement.executeUpdate(updateServingQuantity);
+		
 	}
 
 	private void close() {
