@@ -20,16 +20,7 @@ public class CookBookApp implements Serializable {
 	 */
 	CookBook cookBook;
 
-	public CookBookApp() throws ClassNotFoundException, SQLException {
-
-		cookBook = new CookBook("Chinese Cuisine");
-
-		cookBook.add(createSuanLaFen());
-		cookBook.add(createGongBaoJiding());
-		cookBook.add(createHongShaoRou());
-
 	
-	}
 
 	private static Recipe createGongBaoJiding() throws ClassNotFoundException, SQLException {
 		Recipe recipe = new Recipe(001, "Gong Bao Jiding", "Sichuan Dish", 4);

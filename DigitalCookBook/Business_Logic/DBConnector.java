@@ -10,6 +10,8 @@ import javax.naming.directory.SearchControls;
 
 import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
 
+import com.sun.media.jfxmedia.events.NewFrameEvent;
+
 /**
  * the connector to connect the java code to database
  * 
@@ -22,6 +24,8 @@ public class DBConnector {
 	private Statement statement = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
+
+	private Recipe recipe;
 
 	public void getAccess() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
@@ -174,10 +178,10 @@ public class DBConnector {
 	public void addRecipe(Recipe r) throws ClassNotFoundException, SQLException {
 		getAccess();
 
-		statement
-				.executeUpdate("INSERT INTO recipe (recipeId, dishName, servings, preparationTime, cookingTime) VALUES("
-						+ r.getRecipeId() + ",'" + r.getDishName() + "', " + r.getServings() + ", " + r.getCookingTime()
-						+ ", " + r.getPreparationTime() + ")");
+		statement.executeUpdate(
+				"INSERT INTO recipe (recipeId, dishName, location,servings, preparationTime, cookingTime) VALUES("
+						+ r.getRecipeId() + ",'" + r.getDishName() + "', '" + r.getLocation() + "'," + r.getServings()
+						+ ", " + r.getCookingTime() + ", " + r.getPreparationTime() + ")");
 
 		close();
 
@@ -232,8 +236,8 @@ public class DBConnector {
 			resultSet = statement.executeQuery(query);
 			resultSet.next();
 			int id = resultSet.getInt("tagId");
-			statement.executeUpdate("INSERT INTO recipe_has_tag (recipe_recipeId, tag_tagId) VALUES(" + recipe.getRecipeId()
-					+ ",'" + id + "' " + ")");
+			statement.executeUpdate("INSERT INTO recipe_has_tag (recipe_recipeId, tag_tagId) VALUES("
+					+ recipe.getRecipeId() + ",'" + id + "' " + ")");
 
 		}
 		close();
@@ -316,6 +320,90 @@ public class DBConnector {
 
 		}
 		close();
+	}
+
+	public Recipe selectRecipeByName(String recipeName) throws ClassNotFoundException, SQLException {
+		getAccess();
+		Integer recipeId;
+		String dishName;
+		String location;
+		Integer servings;
+		Integer preparationTime;
+		Integer cookingTime;
+
+		String ingredientName;
+		Integer quantity;
+		String unit;
+		String description;
+
+		Integer step;
+
+		String tagContent;
+
+		String sql = "SELECT * from recipe where recipe.dishName = " + "'" + recipeName + "'";
+		resultSet = statement.executeQuery(sql);
+		while (resultSet.next()) {
+			recipeId = resultSet.getInt("recipeId");
+			dishName = resultSet.getString("dishName");
+			location = resultSet.getString("location");
+			servings = resultSet.getInt("servings");
+			preparationTime = resultSet.getInt("preparationTime");
+			cookingTime = resultSet.getInt("cookingTime");
+			recipe = new Recipe(recipeId, dishName, location, servings);
+			recipe.setPreparationTime(preparationTime);
+			recipe.setCookingTime(cookingTime);
+		}
+
+		String sql1 = "SELECT ingredientId, ingredientName, quantity, unit,description from recipe as t1, recipe_has_ingredients as t2, ingredients as t3 "
+				+ "where t1.dishName = " + "'" + recipeName + "'"
+				+ " and t1.recipeId = t2.recipe_recipeId and t2.ingredients_ingredientId = t3.ingredientId";
+		resultSet = statement.executeQuery(sql1);
+		while (resultSet.next()) {
+			ingredientName = resultSet.getString("ingredientName");
+			quantity = resultSet.getInt("quantity");
+			unit = resultSet.getString("unit");
+			description = resultSet.getString("description");
+			if (description.equals(null)) {
+				recipe.addIngredient(new Ingredient(ingredientName, quantity, unit));
+			} else {
+				recipe.addIngredient(new Ingredient(ingredientName, quantity, unit, description));
+			}
+
+		}
+
+		String sql2 = "SELECT step, description from recipe, preparation_step where recipe.recipeId = preparation_step.recipeId and recipe.dishName = "
+				+ "'" + recipeName + "'";
+		resultSet = statement.executeQuery(sql2);
+		while (resultSet.next()) {
+			step = resultSet.getInt("step");
+			description = resultSet.getString("description");
+			recipe.addPreparationStep(description);
+		}
+		
+		
+		String sql3 = "SELECT tagContent from recipe as t1, recipe_has_tag as t2, tag as t3 " + "where t1.dishName="
+				+ "'" + recipeName + "'" + " and t1.recipeId=t2.recipe_recipeId and t2.tag_tagId= t3.tagId";
+		resultSet = statement.executeQuery(sql3);
+		while (resultSet.next()) {
+			tagContent = resultSet.getString("tagContent");
+			recipe.addTag(new Tag(tagContent));
+
+		}
+		
+		return recipe;
+
+	}
+	
+	public void updateServings(String recipeName,int newServings) throws ClassNotFoundException, SQLException{
+		DBConnector dbConnector = new DBConnector();
+		recipe= dbConnector.selectRecipeByName(recipeName);
+		int originServings = recipe.getServings();
+		System.out.println(originServings);
+		float times = (float)newServings/originServings;
+		System.out.println(times);
+		String updateServings = "Update recipe set recipe.preparationTime = "+times+"*recipe.preparationTime , "
+				+ "recipe.cookingTime = "+times+"*recipe.cookingTime where recipe.dishName = "+"'"+recipeName+"'";
+		statement.executeUpdate(updateServings);
 	}
 
 	private void close() {

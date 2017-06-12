@@ -33,7 +33,7 @@ public class Recipe implements Serializable {
 	 * @param location
 	 * @param servings
 	 */
-	public Recipe(int recipeId, String dishName, String location, int servings) {
+	public Recipe(int recipeId, String dishName, String location, int servings)  {
 		this.recipeId = recipeId;
 		this.dishName = dishName;
 		this.location = location;
