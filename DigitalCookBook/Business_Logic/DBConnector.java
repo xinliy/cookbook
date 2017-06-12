@@ -307,7 +307,7 @@ public class DBConnector {
 			while (resultSet.next()) {
 				String searchResult = resultSet.getString("dishName");
 				recipeList.add(selectRecipeByName(searchResult));
-				System.out.println(searchResult);
+				//System.out.println(searchResult);
 
 			}
 
@@ -327,7 +327,7 @@ public class DBConnector {
 					recipeList.add(selectRecipeByName(dishName));
 				}
 				
-				System.out.println(searchResult);
+				//System.out.println(searchResult);
 
 			}
 
