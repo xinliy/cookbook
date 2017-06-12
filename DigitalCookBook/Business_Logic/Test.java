@@ -10,8 +10,12 @@ public class Test {
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-	DBConnector dbConnector =  new DBConnector();
-	Recipe recipe = dbConnector.selectRecipeByName("Hong Shao Rou");
-	dbConnector.updateServings("Hong Shao Rou", 9);
+		String recipeName = "Hong Shao Rou";
+		int changeServing= 10;
+	Controller controller = new Controller();
+	DBConnector dbConnector = new DBConnector();
+	controller.changeServingRetunList(recipeName, changeServing);
+	//dbConnector.updateServings(recipeName, changeServing);
+	
 }
 }

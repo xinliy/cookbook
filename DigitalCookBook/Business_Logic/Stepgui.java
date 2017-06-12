@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 public class Stepgui {
 	private static JTable table;
 	private static JTable table1;
+	private static JTable table2;
 	private static JTextField textField;
 
 	public static void main(String[] args) {
@@ -102,7 +103,7 @@ public class Stepgui {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String recipeName = "Suan La Fen";
+				String recipeName = "Hong Shao Rou";
 			
 				int changedServing = serving.getSelectedIndex()+1;
 				Controller controller = new Controller();
@@ -116,17 +117,43 @@ public class Stepgui {
 				
 				
 				try {
-					targetRecipe = controller.catchRecipe(recipeName);
+					//targetRecipe = controller.catchRecipe(recipeName);
 					
 					LinkedList<Integer>cookingTimePreTime= new LinkedList<Integer> ();
-					 cookingTimePreTime= controller.changeServingRetunList(textArea_1.getText(), changedServing);
+					  controller.changeServingRetunList(textArea_1.getText(), changedServing);
+					  cookingTimePreTime = controller.getTimeList(recipeName);
 					
 					System.out.println(cookingTimePreTime.get(0));
 					textArea.setText(String.valueOf(cookingTimePreTime.get(0)));
 					textArea_2.setText(String.valueOf(cookingTimePreTime.get(1)));
-					System.out.println("1111111111");
+					//System.out.println("1111111111");
 					
 					
+					int ingredientNumber = controller.getIngredientNumbaer(recipeName);
+					
+					DefaultTableModel model = new DefaultTableModel();
+					model.addColumn("ingredient");
+
+					for (int i = 0; i < ingredientNumber; i++) {
+
+						model.addRow(new Object[] { controller.getIngredientSentence(recipeName, i) });
+					}
+
+					table2 = new JTable(model);
+					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
+					table2.setBounds(15, 175, 483, 50);
+					table2.setShowGrid(false);
+					
+					JScrollPane tableScrollPane = new JScrollPane(table2);
+					tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+					tableScrollPane.setBounds(15,175,483,80);
+					
+					//panel.add(table);
+
+					panel.add(tableScrollPane);
+					
+					frame.revalidate();	
 					
 					
 					
@@ -172,8 +199,10 @@ public class Stepgui {
 			public void actionPerformed(ActionEvent e) {
 				Controller controller = new Controller();
 				try {
-					String recipeName = "Suan La Fen";
+					String recipeName = "Hong Shao Rou";
+					System.out.println("111111111111");
 					Recipe targetRecipe = controller.catchRecipe(recipeName);
+					//System.out.println("222222222222");
 					int ingredientNumber = controller.getIngredientNumbaer(recipeName);
 					int stepNumber = controller.getStepNumber(recipeName);
 					textArea.append(String.valueOf(targetRecipe.getPreparationTime()));

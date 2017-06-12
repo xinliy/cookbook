@@ -395,15 +395,19 @@ public class DBConnector {
 	}
 	
 	public void updateServings(String recipeName,int newServings) throws ClassNotFoundException, SQLException{
-		DBConnector dbConnector = new DBConnector();
-		recipe= dbConnector.selectRecipeByName(recipeName);
+		
+		recipe= selectRecipeByName(recipeName);
 		int originServings = recipe.getServings();
 		System.out.println(originServings);
 		float times = (float)newServings/originServings;
 		System.out.println(times);
-		String updateServings = "Update recipe set recipe.preparationTime = "+times+"*recipe.preparationTime , "
-				+ "recipe.cookingTime = "+times+"*recipe.cookingTime where recipe.dishName = "+"'"+recipeName+"'";
-		statement.executeUpdate(updateServings);
+		String updateServingsTime = "Update recipe set recipe.preparationTime = "+times+"*recipe.preparationTime , "
+				+ "recipe.cookingTime = "+times+"*recipe.cookingTime, recipe.servings = "+"'"+newServings+"'"+" where recipe.dishName = "+"'"+recipeName+"'";
+		statement.executeUpdate(updateServingsTime);
+		
+		String updateServingQuantity = "Update recipe_has_ingredients inner join recipe on recipe.recipeId = recipe_has_ingredients.recipe_recipeId "
+				+ "set quantity= "+times+"*quantity where recipe.dishName ="+"'"+recipeName+"'";
+		statement.executeUpdate(updateServingQuantity);
 	}
 
 	private void close() {

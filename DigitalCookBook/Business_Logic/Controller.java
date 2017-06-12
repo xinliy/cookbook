@@ -3,8 +3,13 @@ import java.util.LinkedList;
 
 public class Controller {
 	
-	private CookBookApp cookBookApp;
-	private DBConnector dbConnector;
+	//private CookBookApp cookBookApp;
+	public DBConnector dbConnector;
+	public Recipe recipe;
+	
+	public Controller() {
+		this.dbConnector = new DBConnector();
+	}
 	
 	
 	
@@ -12,8 +17,10 @@ public class Controller {
 	
 	public Recipe catchRecipe(String recipeName) throws ClassNotFoundException, SQLException{
 		
+		recipe = dbConnector.selectRecipeByName(recipeName);
 		
-		return dbConnector.selectRecipeByName(recipeName);
+		
+		return recipe;
 		
 	}
 	public int getIngredientNumbaer(String recipeName) throws ClassNotFoundException, SQLException{
@@ -45,13 +52,25 @@ public class Controller {
 		return ingredientSentence;
 	}
 	
-	public LinkedList<Integer>  changeServingRetunList(String recipeName,int changeServing) throws ClassNotFoundException, SQLException{
-		CookBookApp cookBookApp = new CookBookApp();
-		cookBookApp.cookBook.reviseServings(recipeName, changeServing);
-		System.out.println(dbConnector.selectRecipeByName(recipeName).getPreparationTime());
+	public void changeServingRetunList(String recipeName,int changeServing) throws ClassNotFoundException, SQLException{
+		dbConnector.updateServings(recipeName, changeServing);
+		
+	}
+	
+	public LinkedList<Integer> getTimeList(String recipeName) throws ClassNotFoundException, SQLException{
+		Recipe recipe = dbConnector.selectRecipeByName(recipeName);
 		LinkedList<Integer> result = new LinkedList<>();
-		result.add(cookBookApp.cookBook.getRecipe(recipeName).getCookingTime());
-		result.add(cookBookApp.cookBook.getRecipe(recipeName).getPreparationTime());
+		result.add(recipe.getCookingTime());
+		result.add(recipe.getPreparationTime());
+		return result;
+	}
+	
+	public LinkedList<Integer> getQuantityList(String recipeName) throws ClassNotFoundException, SQLException{
+		Recipe recipe = dbConnector.selectRecipeByName(recipeName);
+		LinkedList<Integer> result = new LinkedList<>();
+		for(int i=0;i<recipe.getIngredient().size();i++){
+			result.add((int)recipe.getIngredient().get(i).getQuantity());
+		}
 		return result;
 	}
 
