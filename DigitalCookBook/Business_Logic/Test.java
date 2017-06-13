@@ -19,9 +19,7 @@ public class Test {
 	recipes=dbConnector.search("garlic", "sweet");
 	//recipes.add(dbConnector.selectRecipeByName("Hong Shao Rou"));
 	//Recipe recipe = dbConnector.selectRecipeByName("Hong Shao Rou");
-	for (int i = 0; i < recipes.size(); i++) {
-		System.out.println(recipes.get(i));
-	}
+	
 	
 	
 	

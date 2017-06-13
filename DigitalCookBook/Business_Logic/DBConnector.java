@@ -291,12 +291,18 @@ public class DBConnector {
 	public LinkedList<Recipe> search(String input, String tagContent) throws SQLException, ClassNotFoundException {
 
 		getAccess();
+		
+		if (tagContent.equals(null)) {
+			tagContent="%";
+			
+		}
+		
 
 		String searchRecipe = " select DISTINCT t1.dishName from recipe as t1, tag as t2 where t1.dishName = '" + input
-				+ "' and t2.tagContent = '" + tagContent + "'";
+				+ "' and t2.tagContent like '" + tagContent + "'";
 		String searchIngredient = "select DISTINCT t1.recipe_recipeId from recipe_has_ingredients as t1, ingredients as t2 where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName = '"
 				+ input + "'"
-				+ "and t1.recipe_recipeId IN (select t3.recipe_recipeId  from recipe_has_tag as t3, tag as t4 where t3.tag_tagId = t4.tagId and t4.tagContent = '"
+				+ "and t1.recipe_recipeId IN (select t3.recipe_recipeId  from recipe_has_tag as t3, tag as t4 where t3.tag_tagId = t4.tagId and t4.tagContent like '"
 				+ tagContent + "')";
 		resultSet = statement.executeQuery(searchRecipe);
 		if (!resultSet.next()) {
@@ -325,6 +331,7 @@ public class DBConnector {
 				while(resultSet1.next()){
 					String dishName = resultSet1.getString("dishName");
 					recipeList.add(selectRecipeByName(dishName));
+					
 				}
 				
 				//System.out.println(searchResult);
