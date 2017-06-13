@@ -27,6 +27,8 @@ public class Stepgui {
 	private static JTable table1;
 	private static JTable table2;
 	private static JTextField textField;
+	private static JTable table_1;
+	private static JScrollPane tableScrollPane;
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Steps");
@@ -38,18 +40,16 @@ public class Stepgui {
 
 		frame.setLocation((width - 768) / 2, (height - 480) / 2);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel);
 
 		placeComponents(panel);
-	
-		
-		
+
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(117, 88, 80, 19);
 		panel.add(textArea);
-		
+
 		JTextArea textArea_1 = new JTextArea();
 		textArea_1.setBounds(208, 16, 225, 29);
 		panel.add(textArea_1);
@@ -65,8 +65,7 @@ public class Stepgui {
 		JTextArea textArea_3 = new JTextArea();
 		textArea_3.setBounds(15, 362, 80, 19);
 		panel.add(textArea_3);
-		
-		
+
 		panel.setLayout(null);
 		JLabel prepareTime = new JLabel("Preparing time:");
 		prepareTime.setBounds(15, 80, 200, 25);
@@ -79,6 +78,8 @@ public class Stepgui {
 		ingredients.setBounds(15, 140, 200, 25);
 		panel.add(ingredients);
 
+		
+		
 		/**
 		 * JLabel steps = new JLabel("Steps:"); steps.setBounds(15, 250, 200,
 		 * 25); panel.add(steps);
@@ -96,41 +97,43 @@ public class Stepgui {
 		serving.configureEditor(editor, serving);
 		serving.setBounds(610, 50, 60, 25);
 		panel.add(serving);
-		
-		
-		//change the cooking time and prepare time
+
+		// change the cooking time and prepare time
 		serving.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String recipeName = "Hong Shao Rou";
-			
-				int changedServing = serving.getSelectedIndex()+1;
+
+				int changedServing = serving.getSelectedIndex() + 1;
 				Controller controller = new Controller();
 				Recipe targetRecipe;
-				
-				
-			
-				
-				
-				
-				
-				
+
 				try {
-					//targetRecipe = controller.catchRecipe(recipeName);
-					
-					LinkedList<Integer>cookingTimePreTime= new LinkedList<Integer> ();
-					  controller.changeServingRetunList(textArea_1.getText(), changedServing);
-					  cookingTimePreTime = controller.getTimeList(recipeName);
-					
-					System.out.println(cookingTimePreTime.get(0));
-					textArea.setText(String.valueOf(cookingTimePreTime.get(0)));
-					textArea_2.setText(String.valueOf(cookingTimePreTime.get(1)));
-					//System.out.println("1111111111");
-					
-					
+					// targetRecipe = controller.catchRecipe(recipeName);
+
+					LinkedList<Integer> cookingTimePreTime = new LinkedList<Integer>();
+					controller.changeServingRetunList(textArea_1.getText(), changedServing);
+					cookingTimePreTime = controller.getTimeList(recipeName);
+
+					//System.out.println(cookingTimePreTime.get(0));
+					textArea.setText(String.valueOf(cookingTimePreTime.get(1)));
+					textArea_2.setText(String.valueOf(cookingTimePreTime.get(0)));
+					// System.out.println("1111111111");
+
 					int ingredientNumber = controller.getIngredientNumbaer(recipeName);
+
+					DefaultTableModel model1 = new DefaultTableModel();
+					model1.addColumn("ingredient");
+
+					for (int i = 0; i < ingredientNumber; i++) {
+
+						model1.addRow(new Object[] { controller.getIngredientSentence(recipeName, i) });
+						System.out.println(controller.getIngredientSentence(recipeName, i));
+					}
+
 					
+					/**
 					DefaultTableModel model = new DefaultTableModel();
 					model.addColumn("ingredient");
 
@@ -139,24 +142,21 @@ public class Stepgui {
 						model.addRow(new Object[] { controller.getIngredientSentence(recipeName, i) });
 					}
 
-					table2 = new JTable(model);
-					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
-					table2.setBounds(15, 175, 483, 50);
-					table2.setShowGrid(false);
-					
-					JScrollPane tableScrollPane = new JScrollPane(table2);
+					table = new JTable(model);
+					table.setBounds(15, 175, 483, 50);
+					table.setShowGrid(false);
+
+					tableScrollPane = new JScrollPane(table);
 					tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-					tableScrollPane.setBounds(15,175,483,80);
-					
-					//panel.add(table);
+					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					tableScrollPane.setBounds(15, 175, 483, 80);
 
 					panel.add(tableScrollPane);
 					
-					frame.revalidate();	
+					**/
 					
-					
-					
+					//frame.revalidate();
+
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -164,7 +164,7 @@ public class Stepgui {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
+
 			}
 		});
 
@@ -180,14 +180,8 @@ public class Stepgui {
 		JButton deleteButton = new JButton("DELETE");
 		deleteButton.setBounds(550, 400, 110, 40);
 		deleteButton.setBackground(new Color(197, 0, 0));
-		panel.add(deleteButton);	
-
+		panel.add(deleteButton);
 		
-
-		
-
-		
-	
 		
 		
 
@@ -200,20 +194,24 @@ public class Stepgui {
 				Controller controller = new Controller();
 				try {
 					String recipeName = "Hong Shao Rou";
-					System.out.println("111111111111");
+					// System.out.println("111111111111");
 					Recipe targetRecipe = controller.catchRecipe(recipeName);
-					//System.out.println("222222222222");
+					// System.out.println("222222222222");
 					int ingredientNumber = controller.getIngredientNumbaer(recipeName);
 					int stepNumber = controller.getStepNumber(recipeName);
-					textArea.append(String.valueOf(targetRecipe.getPreparationTime()));
-					textArea_1.append(targetRecipe.getDishName());
-					textArea_2.append(String.valueOf(targetRecipe.getCookingTime()));
+					textArea.setText(String.valueOf(targetRecipe.getPreparationTime()));
+					textArea_1.setText(targetRecipe.getDishName());
+					textArea_2.setText(String.valueOf(targetRecipe.getCookingTime()));
 
-					textArea_3.append("STEP:");
+					textArea_3.setText("STEP:");
 					textArea_3.setBounds(20, 255, 80, 19);
-					//textArea_3.setBounds(20, 180 + 16 * ingredientNumber, 80, 19);
+					// textArea_3.setBounds(20, 180 + 16 * ingredientNumber, 80,
+					// 19);
 					textArea_3.setBackground(new Color(238, 238, 238));
 
+					
+					
+					
 					DefaultTableModel model = new DefaultTableModel();
 					model.addColumn("ingredient");
 
@@ -223,18 +221,16 @@ public class Stepgui {
 					}
 
 					table = new JTable(model);
-					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
 					table.setBounds(15, 175, 483, 50);
 					table.setShowGrid(false);
-					
-					JScrollPane tableScrollPane = new JScrollPane(table);
+
+					tableScrollPane = new JScrollPane(table);
 					tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-					tableScrollPane.setBounds(15,175,483,80);
-					
-					//panel.add(table);
+					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+					tableScrollPane.setBounds(15, 175, 483, 80);
 
 					panel.add(tableScrollPane);
+
 					
 					
 					
@@ -247,21 +243,19 @@ public class Stepgui {
 					}
 
 					table1 = new JTable(model1);
-					 //table.setBounds(15, 175, 483, 16 * ingredientNumber);
+					// table.setBounds(15, 175, 483, 16 * ingredientNumber);
 					table1.setBounds(15, 275, 483, 50);
 					table1.setShowGrid(false);
 					panel.add(table1);
-					
+
 					JScrollPane tableScrollPane1 = new JScrollPane(table1);
 					tableScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 					tableScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 					tableScrollPane1.setBounds(15, 275, 483, 80);
-					
+
 					panel.add(tableScrollPane1);
 
-
-
-					frame.revalidate();
+					// frame.revalidate();
 
 				} catch (ClassNotFoundException e1) {
 
@@ -281,8 +275,6 @@ public class Stepgui {
 		/**
 		 * 
 		 */
-
-		
 
 	}
 }

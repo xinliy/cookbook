@@ -412,7 +412,6 @@ public class DBConnector {
 		}
 		
 		return recipe;
-
 	}
 	
 	public void updateServings(String recipeName,int newServings) throws ClassNotFoundException, SQLException{
@@ -432,7 +431,7 @@ public class DBConnector {
 		
 	}
 
-	private void close() {
+	public void close() {
 		try {
 			if (resultSet != null) {
 				resultSet.close();

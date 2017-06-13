@@ -12,6 +12,7 @@ public class CookBook implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String cookBookName;
 	private LinkedList<Recipe> recipeList = new LinkedList<Recipe>();
+	public DBConnector dbConnector;
 	
 
 	/**
@@ -21,6 +22,11 @@ public class CookBook implements Serializable {
 	 *            the name of our cookbook
 	 */
 
+	public CookBook() {
+		this.dbConnector = new DBConnector();
+	}
+	
+	
 	public CookBook(String cookBookName) {
 
 		this.cookBookName = cookBookName;
@@ -58,6 +64,8 @@ public class CookBook implements Serializable {
 		return buf;
 
 	}
+
+	
 
 	/**
 	 * Revise the number of the guests

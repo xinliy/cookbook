@@ -17,6 +17,7 @@ public class Test {
 	DBConnector dbConnector = new DBConnector();
 	LinkedList<Recipe>recipes=new LinkedList<>();
 	recipes=dbConnector.search("garlic", "sweet");
+	System.out.println(recipes.get(0));
 	//recipes.add(dbConnector.selectRecipeByName("Hong Shao Rou"));
 	//Recipe recipe = dbConnector.selectRecipeByName("Hong Shao Rou");
 	
