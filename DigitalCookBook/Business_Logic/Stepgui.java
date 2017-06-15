@@ -30,7 +30,7 @@ public class Stepgui {
 	private static JTable table_1;
 	private static JScrollPane tableScrollPane;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		JFrame frame = new JFrame("Steps");
 		frame.setSize(768, 480);
 		Toolkit tool = Toolkit.getDefaultToolkit();
@@ -62,10 +62,6 @@ public class Stepgui {
 		btnShow.setBounds(15, 409, 93, 23);
 		panel.add(btnShow);
 
-		JTextArea textArea_3 = new JTextArea();
-		textArea_3.setBounds(15, 362, 80, 19);
-		panel.add(textArea_3);
-
 		panel.setLayout(null);
 		JLabel prepareTime = new JLabel("Preparing time:");
 		prepareTime.setBounds(15, 80, 200, 25);
@@ -74,6 +70,7 @@ public class Stepgui {
 		JLabel cookTime = new JLabel("Cooking time:");
 		cookTime.setBounds(15, 110, 80, 25);
 		panel.add(cookTime);
+		/**
 		JLabel ingredients = new JLabel("Ingredients:");
 		ingredients.setBounds(15, 140, 200, 25);
 		panel.add(ingredients);
@@ -182,7 +179,23 @@ public class Stepgui {
 		deleteButton.setBackground(new Color(197, 0, 0));
 		panel.add(deleteButton);
 		
+		JTextArea textArea_3 = new JTextArea();
+		textArea_3.setBounds(25, 142, 327, 112);
+		panel.add(textArea_3);
 		
+		textArea_3.setLineWrap(true);
+		Controller controller = new Controller();
+		int ingredientNumber = controller.getIngredientNumbaer("Suan La Fen");
+		for(int i=0 ;i<ingredientNumber;i++){
+			textArea_3.append(controller.getIngredientSentence("Suan La Fen", i)+"\r\n");
+		}
+		
+		JScrollPane tableScrollPane2 = new JScrollPane(textArea_3);
+		tableScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		tableScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		tableScrollPane2.setBounds(25, 142, 327, 112);
+
+		panel.add(tableScrollPane2);
 		
 
 		frame.setVisible(true);
@@ -203,11 +216,11 @@ public class Stepgui {
 					textArea_1.setText(targetRecipe.getDishName());
 					textArea_2.setText(String.valueOf(targetRecipe.getCookingTime()));
 
-					textArea_3.setText("STEP:");
-					textArea_3.setBounds(20, 255, 80, 19);
+					//textArea_3.setText("STEP:");
+					//textArea_3.setBounds(20, 255, 80, 19);
 					// textArea_3.setBounds(20, 180 + 16 * ingredientNumber, 80,
 					// 19);
-					textArea_3.setBackground(new Color(238, 238, 238));
+					//textArea_3.setBackground(new Color(238, 238, 238));
 
 					
 					
@@ -221,13 +234,13 @@ public class Stepgui {
 					}
 
 					table = new JTable(model);
-					table.setBounds(15, 175, 483, 50);
+					table.setBounds(15, 155, 483, 110);
 					table.setShowGrid(false);
 
 					tableScrollPane = new JScrollPane(table);
 					tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 					tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					tableScrollPane.setBounds(15, 175, 483, 80);
+					tableScrollPane.setBounds(15, 155, 483, 110);
 
 					panel.add(tableScrollPane);
 
@@ -244,14 +257,14 @@ public class Stepgui {
 
 					table1 = new JTable(model1);
 					// table.setBounds(15, 175, 483, 16 * ingredientNumber);
-					table1.setBounds(15, 275, 483, 50);
+					table1.setBounds(15, 275, 483, 110);
 					table1.setShowGrid(false);
 					panel.add(table1);
 
 					JScrollPane tableScrollPane1 = new JScrollPane(table1);
 					tableScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 					tableScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					tableScrollPane1.setBounds(15, 275, 483, 80);
+					tableScrollPane1.setBounds(15, 275, 483, 110);
 
 					panel.add(tableScrollPane1);
 

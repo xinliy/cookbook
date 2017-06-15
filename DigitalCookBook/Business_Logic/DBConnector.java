@@ -6,12 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-import javax.naming.directory.SearchControls;
-
-import org.omg.PortableServer.ID_ASSIGNMENT_POLICY_ID;
-
-import com.sun.media.jfxmedia.events.NewFrameEvent;
-
 /**
  * the connector to connect the java code to database
  * 
@@ -22,21 +16,24 @@ public class DBConnector {
 
 	private Connection connection = null;
 	private Statement statement = null;
+	private Statement statement1 = null;
 	private PreparedStatement preparedStatement = null;
 	private ResultSet resultSet = null;
 
 	private Recipe recipe;
 	private LinkedList<Recipe> recipeList;
-	
-	
+
 	public DBConnector() {
-		this.recipeList=new LinkedList<>();
+		this.recipeList = new LinkedList<>();
 	}
+
 	public void getAccess() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 		// Setup the connection with the DB
 		connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cookbook", "root", "");
 		statement = connection.createStatement();
+		statement1= connection.createStatement();
+		
 
 	}
 
@@ -291,16 +288,18 @@ public class DBConnector {
 	public LinkedList<Recipe> search(String input, String tagContent) throws SQLException, ClassNotFoundException {
 
 		getAccess();
-		
-		if (tagContent.equals(null)) {
-			tagContent="%";
-			
-		}
-		
+		LinkedList<Integer> idlist = new LinkedList<>();
 
-		String searchRecipe = " select DISTINCT t1.dishName from recipe as t1, tag as t2 where t1.dishName = '" + input
+		if (tagContent.equals(null)) {
+			tagContent = "%";
+
+		}
+
+		String searchRecipe = "  select DISTINCT t1.dishName from recipe as t1, tag as t2, recipe_has_tag as t3 "
+				+ "where t1.recipeId=t3.recipe_recipeId and t2.tagId = t3.tag_tagId  and t1.dishName = '" + input
 				+ "' and t2.tagContent like '" + tagContent + "'";
-		String searchIngredient = "select DISTINCT t1.recipe_recipeId from recipe_has_ingredients as t1, ingredients as t2 where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName = '"
+		String searchIngredient = "select DISTINCT t1.recipe_recipeId from recipe_has_ingredients as t1, ingredients as t2 "
+				+ "where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName = '"
 				+ input + "'"
 				+ "and t1.recipe_recipeId IN (select t3.recipe_recipeId  from recipe_has_tag as t3, tag as t4 where t3.tag_tagId = t4.tagId and t4.tagContent like '"
 				+ tagContent + "')";
@@ -313,7 +312,7 @@ public class DBConnector {
 			while (resultSet.next()) {
 				String searchResult = resultSet.getString("dishName");
 				recipeList.add(selectRecipeByName(searchResult));
-				//System.out.println(searchResult);
+				// System.out.println(searchResult);
 
 			}
 
@@ -325,22 +324,40 @@ public class DBConnector {
 		} else {
 			resultSet.beforeFirst();
 			while (resultSet.next()) {
-				int searchResult = resultSet.getInt("recipe_recipeId");
-				String sql = "SELECT DISTINCT dishname from recipe, recipe_has_ingredients where recipe.recipeId= recipe_has_ingredients.recipe_recipeId and recipe_recipeId =  "+searchResult;
-				ResultSet resultSet1 = statement.executeQuery(sql);
-				while(resultSet1.next()){
-					String dishName = resultSet1.getString("dishName");
-					recipeList.add(selectRecipeByName(dishName));
-					
-				}
 				
+
+				int searchResult = resultSet.getInt("recipe_recipeId");
+				idlist.add(searchResult);
 				//System.out.println(searchResult);
 
+				
+			}
+			
+			
+			for(int i=0;i<idlist.size();i++){
+				recipeList.add(selectRecipeById(idlist.get(i)));
 			}
 
 		}
-		close();
+		
 		return recipeList;
+	}
+
+	public Recipe selectRecipeById(int RecipeId) throws SQLException, ClassNotFoundException {
+		getAccess();
+		String sql = "SELECT DISTINCT dishname from recipe, recipe_has_ingredients where recipe.recipeId= recipe_has_ingredients.recipe_recipeId and recipe_recipeId = "
+				+ RecipeId;
+
+		String dishName;
+		resultSet = statement.executeQuery(sql);
+		//System.out.println("11111111111111");
+		while (resultSet.next()) {
+			dishName = resultSet.getString("dishName");
+			recipe = selectRecipeByName(dishName);
+		}
+
+		return recipe;
+
 	}
 
 	public Recipe selectRecipeByName(String recipeName) throws ClassNotFoundException, SQLException {
@@ -400,8 +417,7 @@ public class DBConnector {
 			description = resultSet.getString("description");
 			recipe.addPreparationStep(description);
 		}
-		
-		
+
 		String sql3 = "SELECT tagContent from recipe as t1, recipe_has_tag as t2, tag as t3 " + "where t1.dishName="
 				+ "'" + recipeName + "'" + " and t1.recipeId=t2.recipe_recipeId and t2.tag_tagId= t3.tagId";
 		resultSet = statement.executeQuery(sql3);
@@ -410,25 +426,26 @@ public class DBConnector {
 			recipe.addTag(new Tag(tagContent));
 
 		}
-		
+
 		return recipe;
 	}
-	
-	public void updateServings(String recipeName,int newServings) throws ClassNotFoundException, SQLException{
-		
-		recipe= selectRecipeByName(recipeName);
+
+	public void updateServings(String recipeName, int newServings) throws ClassNotFoundException, SQLException {
+
+		recipe = selectRecipeByName(recipeName);
 		int originServings = recipe.getServings();
 		System.out.println(originServings);
-		float times = (float)newServings/originServings;
+		float times = (float) newServings / originServings;
 		System.out.println(times);
-		String updateServingsTime = "Update recipe set recipe.preparationTime = "+times+"*recipe.preparationTime , "
-				+ "recipe.cookingTime = "+times+"*recipe.cookingTime, recipe.servings = "+"'"+newServings+"'"+" where recipe.dishName = "+"'"+recipeName+"'";
+		String updateServingsTime = "Update recipe set recipe.preparationTime = " + times + "*recipe.preparationTime , "
+				+ "recipe.cookingTime = " + times + "*recipe.cookingTime, recipe.servings = " + "'" + newServings + "'"
+				+ " where recipe.dishName = " + "'" + recipeName + "'";
 		statement.executeUpdate(updateServingsTime);
-		
+
 		String updateServingQuantity = "Update recipe_has_ingredients inner join recipe on recipe.recipeId = recipe_has_ingredients.recipe_recipeId "
-				+ "set quantity= "+times+"*quantity where recipe.dishName ="+"'"+recipeName+"'";
+				+ "set quantity= " + times + "*quantity where recipe.dishName =" + "'" + recipeName + "'";
 		statement.executeUpdate(updateServingQuantity);
-		
+
 	}
 
 	public void close() {
