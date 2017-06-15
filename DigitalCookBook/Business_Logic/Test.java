@@ -19,7 +19,7 @@ public class Test {
 	
 	// dbConnector.selectRecipeById(1);
 	
-	recipes=dbConnector.search("Suan La Fen", "sweet");
+	recipes=dbConnector.search("Suan La Fen", "All flavr");
 	for(int i=0;i<recipes.size();i++){
 		System.out.println(recipes.get(i));
 	}

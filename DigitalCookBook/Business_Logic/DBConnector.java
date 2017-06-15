@@ -290,7 +290,7 @@ public class DBConnector {
 		getAccess();
 		LinkedList<Integer> idlist = new LinkedList<>();
 
-		if (tagContent.equals(null)) {
+		if (tagContent.equals("All flavor")) {
 			tagContent = "%";
 
 		}
