@@ -32,8 +32,7 @@ public class DBConnector {
 		// Setup the connection with the DB
 		connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cookbook", "root", "");
 		statement = connection.createStatement();
-		statement1= connection.createStatement();
-		
+		statement1 = connection.createStatement();
 
 	}
 
@@ -294,15 +293,17 @@ public class DBConnector {
 			tagContent = "%";
 
 		}
+		String input_notexactly = "%" + input + "%";
+		System.out.println(input);
 
 		String searchRecipe = "  select DISTINCT t1.dishName from recipe as t1, tag as t2, recipe_has_tag as t3 "
-				+ "where t1.recipeId=t3.recipe_recipeId and t2.tagId = t3.tag_tagId  and t1.dishName = '" + input
-				+ "' and t2.tagContent like '" + tagContent + "'";
-		String searchIngredient = "select DISTINCT t1.recipe_recipeId from recipe_has_ingredients as t1, ingredients as t2 "
-				+ "where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName = '"
-				+ input + "'"
+				+ "where t1.recipeId=t3.recipe_recipeId and t2.tagId = t3.tag_tagId  and t1.dishName like '"
+				+ input_notexactly + "' and t2.tagContent like '" + tagContent + "'";
+		String searchIngredient = "select DISTINCT t1.recipe_recipeId, t2.ingredientName from recipe_has_ingredients as t1, ingredients as t2 "
+				+ "where t1.ingredients_ingredientId = t2.ingredientId and t2.ingredientName like '" + input_notexactly
+				+ "'"
 				+ "and t1.recipe_recipeId IN (select t3.recipe_recipeId  from recipe_has_tag as t3, tag as t4 where t3.tag_tagId = t4.tagId and t4.tagContent like '"
-				+ tagContent + "')";
+				+ tagContent + "')" + "group by t1.recipe_recipeId";
 		resultSet = statement.executeQuery(searchRecipe);
 		if (!resultSet.next()) {
 			System.out.println("Not a recipe!");
@@ -311,8 +312,16 @@ public class DBConnector {
 			resultSet.beforeFirst();
 			while (resultSet.next()) {
 				String searchResult = resultSet.getString("dishName");
-				recipeList.add(selectRecipeByName(searchResult));
-				// System.out.println(searchResult);
+				System.out.println(searchResult);
+
+				String[] word = searchResult.split("\\s+");
+				for (String string : word) {
+
+					if (string.equals(input)) {
+
+						recipeList.add(selectRecipeByName(searchResult));
+					}
+				}
 
 			}
 
@@ -324,22 +333,24 @@ public class DBConnector {
 		} else {
 			resultSet.beforeFirst();
 			while (resultSet.next()) {
-				
 
 				int searchResult = resultSet.getInt("recipe_recipeId");
-				idlist.add(searchResult);
-				//System.out.println(searchResult);
+				String ingredientName = resultSet.getString("ingredientName");
+				String[] word = ingredientName.split("\\s+");
+				for (String string : word) {
+					if (string.equals(input)) {
+						idlist.add(searchResult);
+					}
+				}
 
-				
 			}
-			
-			
-			for(int i=0;i<idlist.size();i++){
+
+			for (int i = 0; i < idlist.size(); i++) {
 				recipeList.add(selectRecipeById(idlist.get(i)));
 			}
 
 		}
-		
+
 		return recipeList;
 	}
 
@@ -350,7 +361,7 @@ public class DBConnector {
 
 		String dishName;
 		resultSet = statement.executeQuery(sql);
-		//System.out.println("11111111111111");
+		// System.out.println("11111111111111");
 		while (resultSet.next()) {
 			dishName = resultSet.getString("dishName");
 			recipe = selectRecipeByName(dishName);
