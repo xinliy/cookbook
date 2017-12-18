@@ -1,0 +1,39 @@
+Application of Cookbook   version 1.0 30/06/2017
+
+
+GENERAL USAGE NOTES
+---------------------
+
+-----   Our application is to provide the service to find the recipe of dishes in our database
+	You can also edit and create your own recipe, we have a characteristic that you can search the dish 
+	through the flavour with the ingredient or dishname,and it can also provide you the whole recipe of our database.
+
+
+-----   First your computer should be equipped with some IDE, such as Eclipse...
+
+	Then you can start to import our database dump into your database:
+
+		1. You can check your database  including the username, password, port and the name you want to choose
+	
+		2. You can change them in the Business_Logic,DBConnector.java, the method of "getAccess")
+
+		3. You can change the username and password in the workbench  --- management -> Users and Privileges
+
+		4. To import the data, you can download our sql file we provided. First execute the statement "create schema cookbook"to be applied as the name of database,
+		then click the server data import
+
+		5. choose "import fromSelf-Contained File", and in the default target schema, choose the one you have created, then refresh.The data will be presented
+		in what you have created. 
+
+	Our application starts in the package controller ,and it is called start.java 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Installing under  Windows or Mac(For those who use Mac, you should try to ensure you have properly installed the workbench) 
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+E-mail:     qiang.ma@stud.fh-luebeck.de
+Website:    https://lernraum.fh-luebeck.de
+
+ 
+Copyright Bingguan Qi, Xiaoyue Zhang, Yuchao Song, Shan Xue, Qiang Ma. 30/06/2017 All rights reserved.
